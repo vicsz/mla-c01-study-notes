@@ -157,6 +157,22 @@ Formula: `1 - [(1 - R²) * (n - 1) / (n - p - 1)]`
 
 ---
 
+### NLP-Specific Metrics
+
+#### Perplexity
+Used to evaluate **language models** (e.g., GPT, LLMs).  
+Measures how well a model predicts a sequence. Lower is better.  
+*Example: Evaluating next-word prediction models.*  
+Formula: `Perplexity = 2^CrossEntropy`
+
+#### BLEU (Bilingual Evaluation Understudy Score)
+Used for **evaluating machine translation** quality.  
+Compares predicted translation to one or more reference translations.  
+Score range: `0 (worst)` to `1 (perfect match)`.  
+*Example: Comparing model-generated translations to human-translated sentences.*
+
+---
+
 ### Visualization Tools
 
 #### Confusion Matrix
@@ -335,7 +351,7 @@ Penalizes large weights in loss function.
 
 ---
 
-## Troubleshooting Models
+## Troubleshooting / Problem Solving 
 
 ### Diagnosing Model Drift
 - Use **SageMaker Model Monitor** to detect changes in input data distributions or prediction quality.
@@ -353,7 +369,6 @@ Penalizes large weights in loss function.
 - Profile training jobs with **SageMaker Debugger** to find bottlenecks.
 - **Improve I/O performance** by moving S3 training data to **FSx for Lustre**:
   - FSx for Lustre automatically links with S3 and offers high-throughput, low-latency access to data.
-
 
 ### Fixing Overfitting
 Symptoms: High training accuracy, poor validation/test accuracy  
@@ -410,6 +425,8 @@ Symptoms: Low accuracy on both training and validation sets
 ### Reducing ML Costs
 - **Use Spot Instances** for training to reduce EC2 cost by up to 90%.  
   → Use **Managed Spot Training** in SageMaker to auto-recover from interruptions.
+- Use **SageMaker Savings Plans** to commit to ML instance usage and reduce long-term costs.
+  → Applies to training and inference on SageMaker for flexible instance families and regions.
 - Use **SageMaker Serverless Inference** for low-volume, spiky traffic to avoid idle instance cost.
 - Use **SageMaker Multi-Model Endpoints** to host multiple models on a single endpoint.
 - Use **SageMaker Batch Transform** for batch jobs instead of provisioning real-time endpoints.
@@ -417,6 +434,24 @@ Symptoms: Low accuracy on both training and validation sets
 - **Use SageMaker Debugger** and **Profiler** to optimize resource usage during training.
 - Compress models using **quantization** or **pruning** to reduce inference costs.
 - Offload preprocessing to **AWS Glue**, **Lambda**, or **Athena** to minimize compute use in training.
+
+### Securing ML Workloads
+- Use **inter-node encryption** during training to secure data in transit.
+- Run jobs in **network isolation** mode to disable internet access entirely.
+- Deploy SageMaker training and inference within a **private VPC subnet** for full network control.
+- Use **VPC endpoints to S3** to ensure data stays within AWS's network.
+- Apply **IAM roles with least privilege** for access to training data and model artifacts.
+- Use **KMS** to encrypt training data, model outputs, EBS volumes, and logs.
+- Store API keys or secrets in **AWS Secrets Manager** or **SSM Parameter Store**.
+
+### Improving Model Latency / Startup Time
+- **ModelLoadingWaitTime** indicates how long it takes to load the model container on the endpoint — high values = cold start latency.
+- Use **Provisioned Inference Endpoints** for consistently low latency — keeps containers pre-loaded and ready.
+- Use **Real-Time Inference Endpoints** for general low-latency needs with auto-scaling — but expect cold starts during initial invocation or scaling events.
+- For latency-sensitive production workloads, prefer **Provisioned Inference** over Real-Time Inference to avoid startup delay.
+- Enable **Warm Pools** to reduce container loading time when scaling Real-Time endpoints.
+- Set **buffering to 0** in Firehose/Kinesis to reduce delays in delivering streaming data to endpoints.
+- Keep **training and inference data in the same Region and Availability Zone** to minimize data transfer latency.
 
 ### Reducing Model Bias
 - Use **SageMaker Clarify** to detect:
