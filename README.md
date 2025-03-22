@@ -90,59 +90,90 @@
 
 ## Model Evaluation Metrics
 
-### Recall
-Use when **false negatives are more costly**.  
-*Example: Missing cancer diagnosis, fraud detection.*  
-Formula: `TP / (TP + FN)`
+---
 
-### Precision
+### Classification Metrics
+
+#### Accuracy
+Use when **class distribution is balanced** and both error types matter.  
+*Example: Manufacturing quality control.*  
+Formula: `(TP + TN) / (TP + TN + FP + FN)`
+
+#### Precision
 Use when **false positives are more costly**.  
 *Example: Flagging non-spam as spam.*  
 Formula: `TP / (TP + FP)`
 
-### Accuracy
-Use when **classes are balanced**, and both error types matter.  
-*Example: Manufacturing quality control.*  
-Formula: `(TP + TN) / (TP + TN + FP + FN)`
+#### Recall (Sensitivity)
+Use when **false negatives are more costly**.  
+*Example: Missing cancer diagnosis, fraud detection.*  
+Formula: `TP / (TP + FN)`
 
-### Specificity
-Focuses on minimizing **false positives** and measuring **true negatives**.  
+#### Specificity
+Focuses on identifying **true negatives**, minimizes false positives.  
 *Example: Avoiding false alarms in healthy patients.*  
 Formula: `TN / (TN + FP)`
 
-### F1 Score
-Balances precision and recall — use for **imbalanced datasets**.  
+#### F1 Score
+Harmonic mean of precision and recall — use for **imbalanced datasets**.  
 *Example: Fraud detection.*  
 Formula: `2 * (Precision * Recall) / (Precision + Recall)`
+
+#### AUC-ROC (Area Under the Curve - Receiver Operating Characteristic)
+Measures the model’s ability to distinguish between classes at various thresholds.  
+- Higher AUC = better classifier.  
+- Useful when you want to evaluate performance across different thresholds.  
+*Example: Medical testing models.*  
+Range: `0.0 – 1.0` (closer to 1 = better)
 
 ---
 
 ### Regression Metrics
 
-#### Mean Absolute Error (MAE)  
-Average of absolute errors.  
-*Example: Predicting house prices.*  
+#### Mean Absolute Error (MAE)
+Average of absolute errors between predictions and true values.  
+*Example: House price prediction.*  
 Formula: `(1/n) * Σ|Actual - Predicted|`
 
-#### Mean Squared Error (MSE)  
-Penalizes larger errors more.  
+#### Mean Squared Error (MSE)
+Penalizes larger errors more heavily than MAE.  
 *Example: Forecasting stock prices.*  
 Formula: `(1/n) * Σ(Actual - Predicted)^2`
 
-#### Root Mean Squared Error (RMSE)  
-Same units as original value.  
+#### Root Mean Squared Error (RMSE)
+Square root of MSE — same units as target variable.  
 *Example: Temperature prediction.*  
-Formula: `sqrt(MSE)`
+Formula: `√MSE`
 
-#### R-Squared  
-Proportion of variance explained.  
-*Example: Linear regression model evaluation.*  
+#### R-Squared (Coefficient of Determination)
+Represents variance explained by the model.  
+*Example: Linear regression evaluation.*  
 Formula: `1 - (Σ(Actual - Predicted)^2 / Σ(Actual - Mean)^2)`
 
-#### Adjusted R-Squared  
-Adjusts R² for number of predictors.  
-Useful for comparing models.  
+#### Adjusted R-Squared
+Modified R² that adjusts for number of features.  
+Useful when comparing models with different number of predictors.  
 Formula: `1 - [(1 - R²) * (n - 1) / (n - p - 1)]`
+
+---
+
+### Visualization Tools
+
+#### Confusion Matrix
+Used for classification. Shows **TP, FP, FN, TN**.  
+→ Helps analyze which classes are misclassified.
+
+#### ROC Curve
+Used for **binary classification** to show the trade-off between **TPR (Recall)** and **FPR** at different thresholds.  
+→ Curve closer to top-left is better.
+
+#### Precision-Recall Curve
+Alternative to ROC when **classes are imbalanced**.  
+→ Shows trade-off between precision and recall at various thresholds.
+
+#### Heat Maps
+Visualize correlation between features or confusion matrices.  
+→ Helpful in identifying **multicollinearity** or misclassifications in multiclass problems.
 
 
 ---
