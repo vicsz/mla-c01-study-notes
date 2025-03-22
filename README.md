@@ -351,6 +351,9 @@ Penalizes large weights in loss function.
 - Use **early stopping** when validation loss plateaus.
 - Optimize **data pipeline**: Use **Pipe mode** or **RecordIO** for faster I/O.
 - Profile training jobs with **SageMaker Debugger** to find bottlenecks.
+- **Improve I/O performance** by moving S3 training data to **FSx for Lustre**:
+  - FSx for Lustre automatically links with S3 and offers high-throughput, low-latency access to data.
+
 
 ### Fixing Overfitting
 Symptoms: High training accuracy, poor validation/test accuracy  
@@ -443,6 +446,24 @@ Symptoms: Low accuracy on both training and validation sets
   - Use **gradient clipping** in deep learning models.
   - Use **batch normalization** to stabilize training.
   - Try a more stable optimizer like **Adam** instead of SGD.
+
+### Senstive Information in Training Data 
+- Maskit it out, use **AWS Glue** or **DataBrew** to apply data masking or obfuscation.
+- Common for PII or compliance-bound fields.
+
+### Duplicate Data in Training Set
+- Use **AWS Glue FindMatches transform** to detect fuzzy duplicates in records.
+- Useful when duplicates are not exact matches (e.g., different casing, typos).
+
+### Anomalies in Training Data
+- Use **SageMaker Data Wrangler** → “**Data Quality and Insights Report**”.
+- Helps find outliers, missing values, duplicates, and skewed distributions.
+
+### Class Imbalance
+- Oversample the minority class using:
+  - SMOTE or random oversampling techniques.
+  - Assign class weights to reduce bias toward majority class.
+
 
 ---
 
