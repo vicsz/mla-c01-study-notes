@@ -447,6 +447,18 @@ Symptoms: Low accuracy on both training and validation sets
   - Use **batch normalization** to stabilize training.
   - Try a more stable optimizer like **Adam** instead of SGD.
 
+#### Model Training Gets Stuck in Local Minimum
+- Training seems stable but the model converges to a **suboptimal solution**.
+- Possible causes:
+  - Poor initialization of weights
+  - Inappropriate learning rate
+  - Limited model complexity
+- Fixes:
+  - Use **different/random weight initializations**
+  - Add **momentum** to gradient descent
+  - Increase model complexity if underfitting
+  - Try **learning rate scheduling** to escape flat regions or local minima
+
 ### Senstive Information in Training Data 
 - Maskit it out, use **AWS Glue** or **DataBrew** to apply data masking or obfuscation.
 - Common for PII or compliance-bound fields.
