@@ -88,6 +88,221 @@
   - **AWS Lake Formation** – permission management for data lakes  
   - **Lookout for Equipment / Metrics / Vision**, **CodeGuru** – know basic purpose only  
 
+## Model Evaluation Metrics
+
+### Recall
+Use when **false negatives are more costly**.  
+*Example: Missing cancer diagnosis, fraud detection.*  
+Formula: `TP / (TP + FN)`
+
+### Precision
+Use when **false positives are more costly**.  
+*Example: Flagging non-spam as spam.*  
+Formula: `TP / (TP + FP)`
+
+### Accuracy
+Use when **classes are balanced**, and both error types matter.  
+*Example: Manufacturing quality control.*  
+Formula: `(TP + TN) / (TP + TN + FP + FN)`
+
+### Specificity
+Focuses on minimizing **false positives** and measuring **true negatives**.  
+*Example: Avoiding false alarms in healthy patients.*  
+Formula: `TN / (TN + FP)`
+
+### F1 Score
+Balances precision and recall — use for **imbalanced datasets**.  
+*Example: Fraud detection.*  
+Formula: `2 * (Precision * Recall) / (Precision + Recall)`
+
+---
+
+### Regression Metrics
+
+#### Mean Absolute Error (MAE)  
+Average of absolute errors.  
+*Example: Predicting house prices.*  
+Formula: `(1/n) * Σ|Actual - Predicted|`
+
+#### Mean Squared Error (MSE)  
+Penalizes larger errors more.  
+*Example: Forecasting stock prices.*  
+Formula: `(1/n) * Σ(Actual - Predicted)^2`
+
+#### Root Mean Squared Error (RMSE)  
+Same units as original value.  
+*Example: Temperature prediction.*  
+Formula: `sqrt(MSE)`
+
+#### R-Squared  
+Proportion of variance explained.  
+*Example: Linear regression model evaluation.*  
+Formula: `1 - (Σ(Actual - Predicted)^2 / Σ(Actual - Mean)^2)`
+
+#### Adjusted R-Squared  
+Adjusts R² for number of predictors.  
+Useful for comparing models.  
+Formula: `1 - [(1 - R²) * (n - 1) / (n - p - 1)]`
+
+
+---
+
+## Modeling Approaches
+
+### Logistic Regression
+For **binary classification**.  
+*Example: Customer churn prediction.*
+
+### Linear Regression
+For **predicting continuous values**.  
+*Example: Predicting home prices.*
+
+### Multiclass Classification
+For multi-label targets. Use **Softmax**, **Multinomial Logistic**, **XGBoost**.  
+*Example: Classify product category.*
+
+### Ordinal Regression
+Use when target classes have order.  
+*Example: Ratings — low, medium, high.*
+
+### Time-Series Forecasting
+Use **ARIMA**, **DeepAR**, **Prophet**.  
+*Example: Stock price forecasting.*
+
+### Ensemble Methods
+Combine multiple models.  
+- **Bagging (Random Forest)**: Reduces variance  
+- **Boosting (XGBoost, LightGBM)**: Reduces bias
+
+### Neural Networks
+- **MLP**: General-purpose (tabular data)  
+- **CNN**: Images  
+- **RNN/LSTM**: Sequences, time-series
+
+### Autoencoders
+Used for **dimensionality reduction**, **anomaly detection**.
+
+### Naive Bayes
+Probabilistic model based on Bayes’ Theorem.  
+Assumes feature independence.  
+*Example: Spam email classification.*
+
+---
+
+## Data Prep & Feature Engineering
+
+### Min-Max Normalization
+Scales to [0, 1].  
+→ Must use **training set values** in production.
+
+### Standardization
+Centers data (mean=0, std=1).  
+→ For models sensitive to feature scale.
+
+### Log Transformation
+Normalizes **skewed distributions**.  
+*Example: Income, web traffic.*
+
+### One-Hot Encoding
+Converts categorical to binary.  
+*Example: Red, Blue → Red=1, Blue=0.*
+
+### Label Encoding
+Maps categories to integers.  
+→ May introduce ordinal meaning unintentionally.
+
+### Feature Binning
+Buckets continuous features.  
+*Example: Age groups — teen, adult, senior.*
+
+### PCA (Principal Component Analysis)
+Dimensionality reduction.  
+→ Keeps key variance.
+
+### Imputation
+Handle missing values (mean, median, models).
+
+### Outlier Handling
+Remove or cap extreme values.
+
+### Data Leakage
+Ensure target info is NOT in input features during training.
+
+---
+
+## Built-In Algorithms
+
+### K-Means
+Unsupervised clustering.  
+*Example: Customer segmentation.*
+
+### PCA
+Used before clustering or modeling to reduce noise.
+
+### XGBoost
+High-performance for tabular data.  
+Supports classification, regression.
+
+### LightGBM
+Fast, efficient gradient boosting framework.  
+*Example: Classification, ranking, regression.*  
+Available in SageMaker with hyperparameter tuning.
+
+### Linear Learner
+Built-in for binary classification & regression.  
+→ Fast and scalable.
+
+### DeepAR
+Time-series forecasting with probabilistic output.
+
+### BlazingText
+For text classification and word embeddings.
+
+### Object2Vec
+Learns embeddings for recommendations.
+
+### Random Cut Forest
+Anomaly detection.  
+*Example: Fraud detection.*
+
+### Seq2Seq
+Sequence-to-sequence learning.  
+*Example: Translation, summarization.*
+
+
+---
+
+## Hyperparameter Tuning
+
+### Hyperband
+Efficient search, stops bad configs early.  
+→ Good for saving compute.
+
+### Bayesian Optimization
+Uses prior results to guide search.  
+→ Best for fewer evaluations with complex models.
+
+### Grid Search
+Exhaustive search.  
+→ Use when search space is small.
+
+### Random Search
+Faster than grid, samples randomly.  
+→ Good for broad search quickly.
+
+### Population-Based Training
+Evolves hyperparameters during training.  
+→ Common in deep learning.
+
+### SageMaker Automatic Model Tuning
+Built-in support for optimization using above strategies.
+
+### Weight Decay
+Regularization technique to prevent overfitting.  
+Penalizes large weights in loss function.  
+*Common in neural networks.*
+
+---
 
 ## Top 40 General Tips for MLA-C01 (Ordered by Importance)
 
