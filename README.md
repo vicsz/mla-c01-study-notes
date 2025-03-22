@@ -304,6 +304,139 @@ Penalizes large weights in loss function.
 
 ---
 
+## Troubleshooting Models
+
+### Diagnosing Model Drift
+- Use **SageMaker Model Monitor** to detect changes in input data distributions or prediction quality.
+- Compare live prediction data to baseline (training) data.
+- Retrain model with **recent data** to reflect the new distribution.
+- Use **automated alerts** to monitor feature drift and data quality.
+- Evaluate on a **fresh test set** to ensure updated model performs well.
+
+### Reducing Training Time
+- Increase **batch size** (fewer updates, more parallelism).
+- Use **GPU**-backed instances (like `p3`, `g4`) for training.
+- Implement **distributed training** (Horovod, SageMaker Distributed).
+- Use **early stopping** when validation loss plateaus.
+- Optimize **data pipeline**: Use **Pipe mode** or **RecordIO** for faster I/O.
+- Profile training jobs with **SageMaker Debugger** to find bottlenecks.
+
+### Fixing Overfitting
+Symptoms: High training accuracy, poor validation/test accuracy  
+- Use **regularization** (`L1`, `L2`) to penalize complex models.
+- Use **dropout layers** in neural networks.
+- Simplify model (fewer parameters, shallower layers).
+- Use **cross-validation** to better generalize across folds.
+- Add **more training data** or apply **data augmentation**.
+- Reduce **training epochs** to prevent overfitting.
+
+### Fixing Underfitting
+Symptoms: Low accuracy on both training and validation sets  
+- Increase model complexity (more layers, deeper trees).
+- **Train longer** — add more epochs.
+- Improve **feature engineering** (new features, interactions).
+- Reduce regularization if too restrictive.
+- Switch to a **more powerful model** (e.g., from linear to non-linear).
+
+### Handling Missing Data / Field Gaps
+- Use **imputation** to fill missing values:  
+  - **Mean/Median** for numerical fields  
+  - **Mode** for categorical fields  
+  - **Model-based** imputation for smarter filling (KNN, regression)  
+- Drop rows or columns only if missing data is **minimal**.
+- Mark missing values with an **indicator column** if meaningful.
+- Ensure **same strategy** is applied at inference time (use pipeline or feature store).
+
+### Deployment/Inference Issues
+- Use **multi-model endpoints** for serving many models efficiently.
+- Use **serverless inference** for spiky or infrequent traffic.
+- Use **real-time inference** for low-latency needs.
+- For large payloads or long inference: use **asynchronous inference**.
+- Use **model versioning** and **shadow testing** to validate new models before replacing live ones.
+
+### Debugging Model Performance
+- Use **SageMaker Debugger** to inspect tensor values and training state.
+- Analyze **confusion matrix**, **precision/recall per class**, and **feature importance**.
+- Use **Model Explainability** (SHAP) in SageMaker Clarify to interpret predictions.
+- Monitor input **data quality** — missing values, outliers, or drift can degrade performance.
+
+### AWS Tips
+- Use **Spot Instances** for cost-effective training.
+- Enable **checkpointing** for long-running jobs.
+- Use **Managed Spot Training** with automatic recovery from interruptions.
+- Monitor **CloudWatch logs and metrics** for failures and resource usage.
+
+---
+
+## AWS ML Infrastructure
+
+### AWS Trainium
+Purpose-built accelerator for **deep learning training**.  
+- Optimized for high throughput, scalability, and low cost.  
+- Supported via **Trn1 instances** in SageMaker and EC2.  
+- Best for **large-scale transformer training**, foundation models.
+
+### AWS Inferentia
+Custom chip for **inference workloads**.  
+- Use with **Inf1 or Inf2 instances** on SageMaker.  
+- Optimized for low latency and cost-efficient inference at scale.  
+- Best for **production deployment of deep learning models**.
+
+### AWS Deep Learning Containers (DLCs)
+Pre-built Docker containers optimized for ML workloads.  
+- Includes popular frameworks: TensorFlow, PyTorch, MXNet, HuggingFace, etc.  
+- Fully compatible with **SageMaker**, **ECS**, **EKS**, and **EC2**.  
+- Reduces setup time and ensures **optimized GPU/CPU performance**.  
+- Ideal for **custom training**, experimenting locally, or deploying in hybrid environments.
+
+### EC2 Instances for ML
+High-performance compute options for training or inference jobs.
+
+#### GPU Instances:
+- **p3**: For **training deep learning models** (e.g., neural networks, transformers).
+- **p4d**: Newest instance with **NVIDIA A100** GPUs for **high-performance training**.
+- **g4ad, g4dn**: For **ML inference** and **medium-scale model training**.
+
+#### CPU Instances:
+- **m5, c5**: General-purpose or compute-optimized EC2 instances for less intensive ML tasks.
+
+### AWS Elastic Inference
+Attaches **GPU acceleration** to **CPU instances** for inference workloads.  
+- Cost-effective alternative to full GPU instances.
+- Supports **TensorFlow**, **PyTorch**, **MXNet**, and **ONNX**.
+
+### AWS Lambda for Serverless Inference
+- Run inference **serverless** without provisioning infrastructure.  
+- Best for **low-volume, low-latency inference**.
+- Integrates with **SageMaker** and can handle models deployed on **SageMaker endpoints**.
+
+### AWS Elastic Kubernetes Service (EKS)
+Managed Kubernetes service that simplifies **containerized model deployment**.  
+- Use **Kubernetes operators** to manage **SageMaker endpoints** in a containerized environment.
+- Ideal for **large-scale ML deployments** and **scalable ML workflows**.
+
+### Amazon Elastic Container Service (ECS)
+Managed container orchestration service for **large-scale inference** workloads.  
+- Can be used with **Deep Learning Containers** for scalable **inference and training**.
+- Supports integration with **SageMaker** for end-to-end ML workflows.
+
+### AWS Batch
+Fully managed batch processing service for running large-scale ML jobs.  
+- Ideal for jobs requiring **massive parallelization** (e.g., hyperparameter tuning).
+- Supports **SageMaker Training Jobs**, Docker containers, and **GPU instances**.
+
+### AWS Outposts
+Deploys **AWS infrastructure on-premises** for **hybrid ML workloads**.  
+- Useful for compliance-sensitive industries or applications with **low-latency requirements**.
+- Integrates seamlessly with **SageMaker** and **other AWS services**.
+
+### AWS Snowball Edge
+Data transfer device with **edge computing capabilities** for ML tasks in remote environments.  
+- Perform **local inference** and **data processing** when low-latency is critical and connectivity is limited.
+- Can be used to **train models** or infer locally, and then transfer data to the cloud for further analysis.
+
+---
+
 ## Top 40 General Tips for MLA-C01 (Ordered by Importance)
 
 1. **Use Managed AWS Services**: Always default to managed options like SageMaker, Glue, Bedrock unless you need full control.
