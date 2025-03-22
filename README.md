@@ -447,7 +447,7 @@ Symptoms: Low accuracy on both training and validation sets
   - Use **batch normalization** to stabilize training.
   - Try a more stable optimizer like **Adam** instead of SGD.
 
-#### Model Training Gets Stuck in Local Minimum
+### Model Training Gets Stuck in Local Minimum
 - Training seems stable but the model converges to a **suboptimal solution**.
 - Possible causes:
   - Poor initialization of weights
