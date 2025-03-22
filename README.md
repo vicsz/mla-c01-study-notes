@@ -1,4 +1,4 @@
-# mla-c01-study-notes
+# AWS Certified Machine Learning Engineer Associate - MLA-C01 Exam - Study Notes
 
 ## Important Links
 
