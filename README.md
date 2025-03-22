@@ -391,11 +391,58 @@ Symptoms: Low accuracy on both training and validation sets
 - Use **Model Explainability** (SHAP) in SageMaker Clarify to interpret predictions.
 - Monitor input **data quality** — missing values, outliers, or drift can degrade performance.
 
-### AWS Tips
-- Use **Spot Instances** for cost-effective training.
-- Enable **checkpointing** for long-running jobs.
-- Use **Managed Spot Training** with automatic recovery from interruptions.
-- Monitor **CloudWatch logs and metrics** for failures and resource usage.
+### Reducing Model Size (for Deployment Efficiency)
+- Use **SageMaker Neo** to compile and optimize models for specific hardware targets (CPU, GPU, edge).
+  - Improves latency and reduces memory usage.
+  - Supports models from TensorFlow, PyTorch, XGBoost, etc.
+- Apply **Quantization** to reduce weights from float32 to int8 or float16.
+  - Smaller size, faster inference with minimal accuracy loss.
+- Use **Pruning** to remove unimportant connections or weights in the model.
+  - Speeds up inference and reduces model footprint.
+- Compress or reduce **input features**:
+  - Drop low-importance features (based on SHAP, feature importance).
+  - Apply dimensionality reduction (e.g., **PCA**) before training.
+  - Helps with latency and inference speed on constrained devices.
+
+### Reducing ML Costs
+- **Use Spot Instances** for training to reduce EC2 cost by up to 90%.  
+  → Use **Managed Spot Training** in SageMaker to auto-recover from interruptions.
+- Use **SageMaker Serverless Inference** for low-volume, spiky traffic to avoid idle instance cost.
+- Use **SageMaker Multi-Model Endpoints** to host multiple models on a single endpoint.
+- Use **SageMaker Batch Transform** for batch jobs instead of provisioning real-time endpoints.
+- Reduce **instance size or type** (e.g., use `ml.m5` instead of `ml.c5` for CPU-bound tasks).
+- **Use SageMaker Debugger** and **Profiler** to optimize resource usage during training.
+- Compress models using **quantization** or **pruning** to reduce inference costs.
+- Offload preprocessing to **AWS Glue**, **Lambda**, or **Athena** to minimize compute use in training.
+
+### Reducing Model Bias
+- Use **SageMaker Clarify** to detect:
+  - **Pre-training bias** (e.g., biased input data)
+  - **Post-training bias** (e.g., biased predictions)
+  - **Feature importance** (identify if a sensitive attribute influences outcomes)
+- Ensure training data is **balanced** across sensitive groups (e.g., gender, age).
+- Avoid using **proxy features** (features that correlate with sensitive attributes).
+- Use **differential fairness** metrics (like disparate impact) to quantify bias.
+- Retrain with **balanced or reweighted samples** to reduce bias.
+
+### Too Many False Positives in Fraud Detection
+- Review **precision-recall tradeoff**:
+  - **Increase precision** by adjusting classification threshold.
+- Use **class weights or cost-sensitive learning** if fraud class is underrepresented.
+- Add **more representative fraud samples** or perform **SMOTE/oversampling**.
+- Consider **ensemble methods** to reduce overfitting and improve generalization.
+- Use **domain-specific rules** in conjunction with ML output for hybrid filtering.
+
+### Model Training Oscillates / Does Not Converge
+- Symptoms: Loss fluctuates wildly or does not reduce consistently.
+- Possible fixes:
+  - **Lower the learning rate** — too high a rate can cause overshooting.
+  - **Use learning rate decay** or schedulers.
+  - Check for **data issues** (e.g., outliers, label noise).
+  - Ensure **shuffling of training data** to prevent learning in batches.
+  - Use **gradient clipping** in deep learning models.
+  - Use **batch normalization** to stabilize training.
+  - Try a more stable optimizer like **Adam** instead of SGD.
 
 ---
 
