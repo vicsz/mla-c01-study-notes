@@ -240,7 +240,7 @@ Assumes feature independence.
 
 ### Min-Max Normalization
 Scales to [0, 1].  
-→ Must use **training set values** in production.
+→ If used for training, must use training set min/max during inference.
 
 ### Standardization
 Centers data (mean=0, std=1).  
@@ -292,6 +292,7 @@ Supports classification, regression.
 
 ### LightGBM
 Fast, efficient gradient boosting framework.  
+Performs well on large, high-dimensional, and imbalanced datasets — supports techniques like class weights and custom loss functions.
 *Example: Classification, ranking, regression.*  
 Available in SageMaker with hyperparameter tuning.
 
@@ -369,6 +370,8 @@ Penalizes large weights in loss function.
 - Profile training jobs with **SageMaker Debugger** to find bottlenecks.
 - **Improve I/O performance** by moving S3 training data to **FSx for Lustre**:
   - FSx for Lustre automatically links with S3 and offers high-throughput, low-latency access to data.
+- Automatically trigger training when new data is uploaded to S3:
+  - Use EventBridge to kick off SageMaker Pipelines.
 
 ### Fixing Overfitting
 Symptoms: High training accuracy, poor validation/test accuracy  
@@ -396,12 +399,16 @@ Symptoms: Low accuracy on both training and validation sets
 - Mark missing values with an **indicator column** if meaningful.
 - Ensure **same strategy** is applied at inference time (use pipeline or feature store).
 
-### Deployment/Inference Issues
-- Use **multi-model endpoints** for serving many models efficiently.
-- Use **serverless inference** for spiky or infrequent traffic.
-- Use **real-time inference** for low-latency needs.
-- For large payloads or long inference: use **asynchronous inference**.
-- Use **model versioning** and **shadow testing** to validate new models before replacing live ones.
+### Deployment Types
+- Use multi-model endpoints for serving many models efficiently from a single endpoint.
+- Use serverless inference for spiky or infrequent traffic.
+  - CPU-only, does not support accelerated (GPU) instances.
+  - Can have cold start times if provisioned concurrency is not used.
+- Use real-time inference for low-latency, high-throughput needs.
+  - Required if you need GPU or accelerated hardware.
+- Use asynchronous inference for large payloads or long inference durations.
+- Use batch inference with for offline predictions on large datasets without deploying a real-time endpoint.
+- Use model versioning and shadow testing for validating new models before replacing live ones.
 
 ### Debugging Model Performance
 - Use **SageMaker Debugger** to inspect tensor values and training state.
@@ -430,7 +437,9 @@ Symptoms: Low accuracy on both training and validation sets
 - Use **SageMaker Serverless Inference** for low-volume, spiky traffic to avoid idle instance cost.
 - Use **SageMaker Multi-Model Endpoints** to host multiple models on a single endpoint.
 - Use **AWS Computer Optimizer.**
+- Use **AWS Budgets** to set cost or usage alerts and catch unexpected ML spend early.
 - Use **SageMaker Batch Transform** for batch jobs instead of provisioning real-time endpoints.
+- Use AWS Batch with Spot Instances for long-running or GPU-based containerized ML jobs.
 - Reduce **instance size or type** (e.g., use `ml.m5` instead of `ml.c5` for CPU-bound tasks).
 - **Use SageMaker Debugger** and **Profiler** to optimize resource usage during training.
 - Compress models using **quantization** or **pruning** to reduce inference costs.
@@ -449,7 +458,7 @@ Symptoms: Low accuracy on both training and validation sets
 - Use **Amazon Macie** or **Amazon Comprehend** to automatically detect and classify PII in S3 and text data.
 - Use **AWS Glue DataBrew** to anonymize, mask, or redact PII data before using it in ML workflows.
 
-### Improving Model Latency / Startup Time
+### Improving Latency
 - **ModelLoadingWaitTime** indicates how long it takes to load the model container on the endpoint — high values = cold start latency.
 - Use **Provisioned Inference Endpoints** for consistently low latency — keeps containers pre-loaded and ready.
 - Use **Real-Time Inference Endpoints** for general low-latency needs with auto-scaling — but expect cold starts during initial invocation or scaling events.
@@ -457,6 +466,7 @@ Symptoms: Low accuracy on both training and validation sets
 - Enable **Warm Pools** to reduce container loading time when scaling Real-Time endpoints.
 - Set **buffering to 0** in Firehose/Kinesis to reduce delays in delivering streaming data to endpoints.
 - Keep **training and inference data in the same Region and Availability Zone** to minimize data transfer latency.
+- Use real-time services (like Kinesis, Flink, Lambda, Amazon MSK, SageMaker Real-Time Inference) for fast, low-latency processing — avoid batch-oriented tools like Glue, Athena, QuickSight, SageMaker Batch Transform, or EMR for latency-critical pipelines.
 
 ### Reducing Model Bias
 - Use **SageMaker Clarify** to detect:
@@ -499,9 +509,10 @@ Symptoms: Low accuracy on both training and validation sets
   - Increase model complexity if underfitting
   - Try **learning rate scheduling** to escape flat regions or local minima
 
-### Senstive Information in Training Data 
-- Maskit it out, use **AWS Glue** or **DataBrew** to apply data masking or obfuscation.
-- Common for PII or compliance-bound fields.
+### Senstive Information in Data 
+- Mask it out: use AWS Glue or DataBrew to apply data masking or obfuscation
+- Detect it (PII): use AWS Macie (for S3) or Comprehend (NLP-based)
+- For Redshift: use Dynamic Data Masking — hides data at query time without changing source data
 
 ### Duplicate Data in Training Set
 - Use **AWS Glue FindMatches transform** to detect fuzzy duplicates in records.
