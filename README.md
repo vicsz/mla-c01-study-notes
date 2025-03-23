@@ -409,6 +409,7 @@ Symptoms: Low accuracy on both training and validation sets
 - Use asynchronous inference for large payloads or long inference durations.
 - Use batch inference with for offline predictions on large datasets without deploying a real-time endpoint.
 - Use model versioning and shadow testing for validating new models before replacing live ones.
+- Use product variants to deploy multiple models (or versions) to the same endpoint and control traffic routing between them (e.g. 70/30 split for A/B testing).
 
 ### Debugging Model Performance
 - Use **SageMaker Debugger** to inspect tensor values and training state.
