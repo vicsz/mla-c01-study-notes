@@ -429,6 +429,7 @@ Symptoms: Low accuracy on both training and validation sets
   → Applies to training and inference on SageMaker for flexible instance families and regions.
 - Use **SageMaker Serverless Inference** for low-volume, spiky traffic to avoid idle instance cost.
 - Use **SageMaker Multi-Model Endpoints** to host multiple models on a single endpoint.
+- Use **AWS Computer Optimizer.**
 - Use **SageMaker Batch Transform** for batch jobs instead of provisioning real-time endpoints.
 - Reduce **instance size or type** (e.g., use `ml.m5` instead of `ml.c5` for CPU-bound tasks).
 - **Use SageMaker Debugger** and **Profiler** to optimize resource usage during training.
@@ -442,7 +443,11 @@ Symptoms: Low accuracy on both training and validation sets
 - Use **VPC endpoints to S3** to ensure data stays within AWS's network.
 - Apply **IAM roles with least privilege** for access to training data and model artifacts.
 - Use **KMS** to encrypt training data, model outputs, EBS volumes, and logs.
-- Store API keys or secrets in **AWS Secrets Manager** or **SSM Parameter Store**.
+- Store API keys or secrets in **AWS Secrets Manager**, which supports rotation.
+- Use **AWS Lake Formation** to define and enforce fine-grained access controls and data governance policies on S3 data used in ML workflows.
+- Enable **AWS CloudTrail** to log and audit all API activity related to SageMaker, IAM, S3, and KMS — helps with compliance and security investigations.
+- Use **Amazon Macie** or **Amazon Comprehend** to automatically detect and classify PII in S3 and text data.
+- Use **AWS Glue DataBrew** to anonymize, mask, or redact PII data before using it in ML workflows.
 
 ### Improving Model Latency / Startup Time
 - **ModelLoadingWaitTime** indicates how long it takes to load the model container on the endpoint — high values = cold start latency.
