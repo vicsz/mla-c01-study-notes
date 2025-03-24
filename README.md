@@ -402,11 +402,21 @@ Symptoms: Low accuracy on both training and validation sets
 ### Deployment Types
 - Use multi-model endpoints for serving many models efficiently from a single endpoint.
 - Use serverless inference for spiky or infrequent traffic.
-  - CPU-only, does not support accelerated (GPU) instances.
-  - Can have cold start times if provisioned concurrency is not used.
+  - Limitations:
+    - Hardware: CPU-only; does not support accelerated (GPU) instances.
+    - Cold Starts: Can have cold start times if provisioned concurrency is not used.
+    - Payload Size: Maximum of 6 MB.
+    - Invocation Timeout: Maximum of 60 seconds.
 - Use real-time inference for low-latency, high-throughput needs.
-  - Required if you need GPU or accelerated hardware.
+  - Unlike Serverless, it does support GPU and accelerated hardware.
+  - Limitations:
+    - Hardware: Supports both CPU and GPU instances.
+    - Payload Size: Maximum of 6 MB.
+    - Invocation Timeout: Default is 60 seconds; can be configured up to 15 minutes for large models.
 - Use asynchronous inference for large payloads or long inference durations.
+  - Limitations:
+    - Payload Size: Supports payload sizes up to 1 GB.
+    - Processing Time: Suitable for processing times up to 15 minutes.
 - Use batch inference with for offline predictions on large datasets without deploying a real-time endpoint.
 - Use model versioning and shadow testing for validating new models before replacing live ones.
 - Use product variants to deploy multiple models (or versions) to the same endpoint and control traffic routing between them (e.g. 70/30 split for A/B testing).
